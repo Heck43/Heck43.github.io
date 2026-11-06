@@ -2960,7 +2960,34 @@
 
   function renderYtmNowPlaying(data) {
     if (!data) return;
+
+    // Check if the track is the same as currently displayed
+    const isSameTrack = Boolean(
+      ytmTrackState &&
+      data &&
+      ytmTrackState.title &&
+      data.title &&
+      ytmTrackState.title.toLowerCase().trim() === data.title.toLowerCase().trim() &&
+      ytmTrackState.artist &&
+      data.artist &&
+      ytmTrackState.artist.toLowerCase().trim() === data.artist.toLowerCase().trim()
+    );
+
+    // Keep continuous smooth ticking if it's the exact same song
+    let targetPos = ytmTrackState.position || 0;
+    if (!isSameTrack) {
+      targetPos = typeof data.position === 'number' ? data.position : 0;
+    } else {
+      // Same track: do not snap backwards to initial offsets during polling
+      if (data.source === 'webhook' && typeof data.position === 'number') {
+        targetPos = data.position;
+      } else if (typeof data.position === 'number' && Math.abs(data.position - targetPos) > 30) {
+        targetPos = data.position;
+      }
+    }
+
     ytmTrackState = Object.assign(ytmTrackState, data);
+    ytmTrackState.position = targetPos;
 
     const card = document.getElementById('ytm-card');
     const badge = document.getElementById('ytm-badge');
