@@ -1,0 +1,37 @@
+name: Real-Time Profile Sync
+
+on:
+  schedule:
+    # Run every 5 minutes to keep profile fresh
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/update-profile.js'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-profile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run Profile Live Updater
+        run: node scripts/update-profile.js
+
+      - name: Commit & Push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/profile-live.json
+          git diff --staged --quiet || (git commit -m "chore(sync): update real-time profile data [skip ci]" && git push)

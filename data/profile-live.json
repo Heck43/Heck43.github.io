@@ -1,0 +1,57 @@
+{
+  "lastUpdated": "2026-11-06T21:07:46.592Z",
+  "timestamp": 1793999266593,
+  "steam": {
+    "steamID64": "76561199103695244",
+    "steamID": "Heck_43",
+    "onlineState": "offline",
+    "stateMessage": "Currently Offline",
+    "currentGame": null,
+    "avatar": "media/steam-avatar.jpg",
+    "memberSince": "November 2, 2020",
+    "summary": "I'm just a regular gamer :3",
+    "level": 24,
+    "gamesCount": "135+",
+    "badgesCount": 17,
+    "recentGames": [
+      {
+        "name": "Far Cry 6",
+        "appId": "2369390",
+        "link": "https://steamcommunity.com/app/2369390",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
+        "hours": "43 ч",
+        "sub": "запуск: 6 Nov"
+      },
+      {
+        "name": "Easy Red 2",
+        "appId": "1324780",
+        "link": "https://steamcommunity.com/app/1324780",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1324780/2da4a16d4e489b91dee3caaf61c8862eb6a89e75/capsule_184x69.jpg?t=1793538691",
+        "hours": "46 ч",
+        "sub": "запуск: 6 Nov"
+      },
+      {
+        "name": "BOYKISSER IS COMING",
+        "appId": "5101080",
+        "link": "https://steamcommunity.com/app/5101080",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/5101080/1172010344a07c41f264541b49e3cb264408a6ca/capsule_184x69.jpg?t=1791547473",
+        "hours": "0.5 ч",
+        "sub": "запуск: 5 Nov"
+      },
+      {
+        "name": "Wallpaper Engine",
+        "appId": "431960",
+        "link": "https://steamcommunity.com/app/431960",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/431960/capsule_184x69.jpg",
+        "hours": "22 ч",
+        "sub": "в библиотеке"
+      }
+    ]
+  },
+  "github": {
+    "public_repos": 27,
+    "followers": 1,
+    "created_at": "2023-02-23T07:34:27Z",
+    "avatar_url": "https://avatars.githubusercontent.com/u/126146783?v=4"
+  }
+}
