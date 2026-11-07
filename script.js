@@ -2961,6 +2961,7 @@
   function isPlaceholderCover(url) {
     if (!url || typeof url !== 'string' || !url.trim()) return true;
     return url.includes('2a96cbd8b46e442fc41c2b86b821562f') ||
+           url.includes('e5a3db04-3c1c-4a25-8687-78583b3299e7') || // Reject Guizmo!
            url.includes('default_album') ||
            url.includes('noimage');
   }
@@ -2971,7 +2972,26 @@
     }
     const tLow = (title || '').toLowerCase();
     const aLow = (artist || '').toLowerCase();
-    if (aLow.includes('renard') || aLow.includes('rotteen') || aLow.includes('lapfox') || aLow.includes('halley') || aLow.includes('kitsune') || aLow.includes('mayhem') || aLow.includes('truxton') || aLow.includes('darius') || aLow.includes('negaren') || aLow.includes('jackal') || tLow.includes('trauma') || tLow.includes('moonlight') || tLow.includes('because maybe') || tLow.includes('bumblefuck') || tLow.includes('ep!') || tLow.includes('party') || tLow.includes('rinse out')) {
+
+    if (aLow.includes('renard') || aLow.includes('lapfox') || aLow.includes('halley') || aLow.includes('rotteen') || aLow.includes('quick brown fox')) {
+      if (tLow.includes('relapse') || tLow.includes('force of nature')) {
+        return 'https://coverartarchive.org/release/f706dab5-da7a-40ad-a8c2-ca036450ac43/front-500.jpg';
+      }
+      if (tLow.includes('because maybe') || tLow.includes('bumblefuck') || tLow.includes('party')) {
+        return 'https://coverartarchive.org/release/8db1a7d1-2b38-46f7-ae5f-da3ff21b7fd6/front-500.jpg';
+      }
+      if (tLow.includes('shut down everything')) {
+        return 'https://coverartarchive.org/release/97359ada-68bb-4213-8f4c-abdbfebc2750/front-500.jpg';
+      }
+      if (tLow.includes('it\'s an ep') || tLow.includes('planet belligerence') || tLow.includes('bms')) {
+        return 'https://coverartarchive.org/release/8db1a7d1-2b38-46f7-ae5f-da3ff21b7fd6/front-500.jpg';
+      }
+      if (tLow.includes('trauma') || tLow.includes('namx') || tLow.includes('moonlight')) {
+        return 'media/tracks/renard-trauma.jpg';
+      }
+      if (tLow.includes('rinse out')) {
+        return 'https://coverartarchive.org/release/62df1cb8-164e-4f7d-bb4c-ddc41d7d5663/front-500.jpg';
+      }
       return 'media/tracks/renard-trauma.jpg';
     }
     if (aLow.includes('femtanyl') || tLow.includes('pistol') || tLow.includes('time') || tLow.includes('lovesick') || tLow.includes('katamari') || tLow.includes('act right') || tLow.includes('dogmatica') || tLow.includes('push ur t3mpo')) {

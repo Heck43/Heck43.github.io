@@ -12,20 +12,49 @@ const coverCache = new Map();
 function isPlaceholder(url) {
   if (!url || typeof url !== 'string' || !url.trim()) return true;
   return url.includes('2a96cbd8b46e442fc41c2b86b821562f') ||
+         url.includes('e5a3db04-3c1c-4a25-8687-78583b3299e7') || // Reject Guizmo!
          url.includes('default_album') ||
          url.includes('noimage');
 }
 
 // Fetch cover from MusicBrainz + CoverArtArchive (covers Rotteen, LapFox, Renard, indie, etc.)
 async function fetchMusicBrainzCover(title, artist, album) {
+  const tLow = (title || '').toLowerCase();
+  const aLow = (artist || '').toLowerCase();
+
+  // Curated high-res artwork for LapFox Trax / Halley Labs / Emma Essex catalog
+  if (aLow.includes('renard') || aLow.includes('lapfox') || aLow.includes('halley') || aLow.includes('rotteen') || aLow.includes('quick brown fox')) {
+    if (tLow.includes('relapse') || tLow.includes('force of nature')) {
+      return 'https://coverartarchive.org/release/f706dab5-da7a-40ad-a8c2-ca036450ac43/front-500.jpg';
+    }
+    if (tLow.includes('because maybe') || tLow.includes('bumblefuck') || tLow.includes('party')) {
+      return 'https://coverartarchive.org/release/8db1a7d1-2b38-46f7-ae5f-da3ff21b7fd6/front-500.jpg';
+    }
+    if (tLow.includes('shut down everything')) {
+      return 'https://coverartarchive.org/release/97359ada-68bb-4213-8f4c-abdbfebc2750/front-500.jpg';
+    }
+    if (tLow.includes('it\'s an ep') || tLow.includes('planet belligerence') || tLow.includes('bms')) {
+      return 'https://coverartarchive.org/release/8db1a7d1-2b38-46f7-ae5f-da3ff21b7fd6/front-500.jpg';
+    }
+    if (tLow.includes('trauma') || tLow.includes('namx') || tLow.includes('moonlight')) {
+      return 'media/tracks/renard-trauma.jpg';
+    }
+    if (tLow.includes('rinse out')) {
+      return 'https://coverartarchive.org/release/62df1cb8-164e-4f7d-bb4c-ddc41d7d5663/front-500.jpg';
+    }
+  }
+
   const cleanTitle = (title || '').replace(/^[^\w\s]+|[^\w\s]+$/g, '').trim();
   const searchQueries = [];
   
   if (album && album.length > 2) {
-    searchQueries.push(`release:${album}`);
+    searchQueries.push(`artist:"${artist.replace(/"/g, '')}" AND release:"${album.replace(/"/g, '')}"`);
   }
-  searchQueries.push(`${artist} ${cleanTitle.split('-')[0].trim()}`);
-  searchQueries.push(artist);
+  const parts = cleanTitle.split(/[-–—]/).map(p => p.trim()).filter(Boolean);
+  if (parts.length > 1) {
+    searchQueries.push(`artist:"${artist.replace(/"/g, '')}" AND release:"${parts[0].replace(/"/g, '')}"`);
+  }
+  searchQueries.push(`artist:"${artist.replace(/"/g, '')}" AND "${cleanTitle.replace(/"/g, '')}"`);
 
   for (const q of searchQueries) {
     try {
@@ -40,7 +69,14 @@ async function fetchMusicBrainzCover(title, artist, album) {
         const mbData = await mbRes.json();
         const releases = mbData?.releases || [];
         for (const rel of releases) {
-          if (rel.id) {
+          // Strict artist validation to prevent false artist matches
+          const relArtist = (rel['artist-credit']?.[0]?.name || '').toLowerCase();
+          const targetArtist = artist.toLowerCase();
+          if (!relArtist.includes(targetArtist) && !targetArtist.includes(relArtist)) {
+            continue;
+          }
+
+          if (rel.id && rel.id !== 'e5a3db04-3c1c-4a25-8687-78583b3299e7') {
             try {
               const caaRes = await fetch(`https://coverartarchive.org/release/${rel.id}`, { signal: AbortSignal.timeout(1800) });
               if (caaRes.ok) {
