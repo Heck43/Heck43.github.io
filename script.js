@@ -3012,11 +3012,15 @@
 
     // Keep continuous smooth ticking if it's the exact same song
     let targetPos = ytmTrackState.position || 0;
+    let keepLocalPause = false;
     if (!isSameTrack) {
       // Brand new track: always start from 0:00!
       targetPos = typeof data.position === 'number' ? data.position : 0;
     } else {
       // Same track:
+      if (ytmTrackState.isPaused && data.source !== 'webhook') {
+        keepLocalPause = true;
+      }
       if (data.isPaused) {
         // If track is paused, freeze at server position
         targetPos = typeof data.position === 'number' ? data.position : targetPos;
@@ -3028,6 +3032,9 @@
     }
 
     ytmTrackState = Object.assign(ytmTrackState, data);
+    if (keepLocalPause) {
+      ytmTrackState.isPaused = true;
+    }
     ytmTrackState.position = targetPos;
 
     const card = document.getElementById('ytm-card');
@@ -3103,6 +3110,34 @@
 
   function initYtmIntegration() {
     renderYtmNowPlaying(ytmTrackState);
+
+    // Interactive play/pause toggle button on the card cover
+    const stateBtn = document.getElementById('ytm-state-icon');
+    if (stateBtn) {
+      stateBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        ytmTrackState.isPaused = !ytmTrackState.isPaused;
+        renderYtmNowPlaying(ytmTrackState);
+        try {
+          fetch('https://heck43githubio.vercel.app/api/ytm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: ytmTrackState.title,
+              artist: ytmTrackState.artist,
+              album: ytmTrackState.album || '',
+              cover: ytmTrackState.cover || '',
+              url: ytmTrackState.url || 'https://music.youtube.com',
+              isPlaying: true,
+              isPaused: ytmTrackState.isPaused,
+              position: ytmTrackState.position || 0,
+              duration: ytmTrackState.duration || 210
+            })
+          }).catch(() => {});
+        } catch(err) {}
+      });
+    }
 
     // Live local clock ticker (increments seconds second-by-second when playing)
     setInterval(() => {

@@ -265,7 +265,13 @@ export default async function handler(req, res) {
               }
               // Calculate elapsed seconds excluding paused time
               const elapsed = Math.floor((now - tracker.startedAt - tracker.totalPausedMs) / 1000);
-              tracker.position = Math.min(duration, Math.max(0, elapsed));
+              if (elapsed >= duration) {
+                tracker.position = duration;
+                tracker.isPaused = true;
+                if (!tracker.pausedAt) tracker.pausedAt = now;
+              } else {
+                tracker.position = Math.max(0, elapsed);
+              }
             } else {
               // Pause detected: freeze current position!
               if (!tracker.isPaused) {
