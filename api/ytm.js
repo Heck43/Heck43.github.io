@@ -2,8 +2,8 @@
 let manualNowPlaying = null;
 let lastManualUpdate = 0;
 
-// Track when each song was first detected playing: trackKey -> timestamp ms
-const activeTrackStarts = new Map();
+// State tracker for active listening sessions: user -> tracker
+const sessionTrackers = new Map();
 // Cache track durations: trackKey -> seconds
 const durationCache = new Map();
 // Cache resolved covers: queryKey -> image url
@@ -63,13 +63,13 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 'public, max-age=3, s-maxage=3, stale-while-revalidate=5');
+  res.setHeader('Cache-Control', 'public, max-age=2, s-maxage=2, stale-while-revalidate=4');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // Handle direct POST webhook from phone or browser
+  // Handle direct POST webhook from phone, browser extension, or desktop userscript
   if (req.method === 'POST') {
     try {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
@@ -82,8 +82,8 @@ export default async function handler(req, res) {
           url: body.url || 'https://music.youtube.com',
           isPlaying: body.isPlaying !== false,
           isPaused: Boolean(body.isPaused),
-          position: typeof body.position === 'number' ? body.position : 0,
-          duration: typeof body.duration === 'number' ? body.duration : 210,
+          position: typeof body.position === 'number' ? Math.floor(body.position) : 0,
+          duration: typeof body.duration === 'number' ? Math.floor(body.duration) : 210,
           source: 'webhook',
           timestamp: Date.now()
         };
@@ -139,7 +139,6 @@ export default async function handler(req, res) {
           cover = (largeImg && largeImg['#text'] && !isPlaceholder(largeImg['#text'])) ? largeImg['#text'] : '';
         }
 
-        // Track duration & elapsed timer
         const trackKey = `${user}:${artistName}:${trackTitle}`.toLowerCase();
         let duration = 210;
 
@@ -158,7 +157,6 @@ export default async function handler(req, res) {
                 duration = Math.round(durMs / 1000);
                 durationCache.set(trackKey, duration);
               }
-              // If image was missing in getrecenttracks, try album image from track info
               if (!cover && infoData?.track?.album?.image) {
                 const img = infoData.track.album.image.find(i => i.size === 'extralarge' || i.size === 'large');
                 if (img && img['#text'] && !isPlaceholder(img['#text'])) {
@@ -207,9 +205,9 @@ export default async function handler(req, res) {
         if (!cover || isPlaceholder(cover)) {
           const tLow = trackTitle.toLowerCase();
           const aLow = artistName.toLowerCase();
-          if (aLow.includes('renard') || aLow.includes('rotteen') || aLow.includes('lapfox') || aLow.includes('halley') || aLow.includes('kitsune') || tLow.includes('trauma') || tLow.includes('moonlight') || tLow.includes('because maybe')) {
+          if (aLow.includes('renard') || aLow.includes('rotteen') || aLow.includes('lapfox') || aLow.includes('halley') || aLow.includes('kitsune') || aLow.includes('mayhem') || aLow.includes('truxton') || aLow.includes('darius') || aLow.includes('negaren') || aLow.includes('jackal') || tLow.includes('trauma') || tLow.includes('moonlight') || tLow.includes('because maybe') || tLow.includes('bumblefuck') || tLow.includes('ep!') || tLow.includes('party') || tLow.includes('rinse out')) {
             cover = 'media/tracks/renard-trauma.jpg';
-          } else if (aLow.includes('femtanyl') || tLow.includes('pistol') || tLow.includes('time')) {
+          } else if (aLow.includes('femtanyl') || tLow.includes('pistol') || tLow.includes('time') || tLow.includes('lovesick') || tLow.includes('katamari') || tLow.includes('act right') || tLow.includes('dogmatica') || tLow.includes('push ur t3mpo')) {
             cover = 'media/tracks/femtanyl-all-the-time.jpg';
           } else if (aLow.includes('fem&m') || tLow.includes('silly') || tLow.includes('down')) {
             cover = 'media/tracks/femm-down-down-down-down.jpg';
@@ -217,7 +215,7 @@ export default async function handler(req, res) {
             cover = 'media/tracks/mailpup-puppyplay.jpg';
           } else if (aLow.includes('stomach') || tLow.includes('circuit')) {
             cover = 'media/tracks/stomach-book-circuit-bent.jpg';
-          } else if (aLow.includes('russel') || tLow.includes('bass')) {
+          } else if (aLow.includes('russel') || tLow.includes('bass') || tLow.includes('eat you up')) {
             cover = 'media/tracks/russelbuck-bass-down-low.jpg';
           } else if (aLow.includes('unfamiliar')) {
             cover = 'media/tracks/unfamiliar-123.jpg';
@@ -226,31 +224,75 @@ export default async function handler(req, res) {
           }
         }
 
+        // ===== ACCURATE PLAY/PAUSE & 00:00 START TRACKER =====
         const now = Date.now();
-        if (isNowPlaying) {
-          if (!activeTrackStarts.has(trackKey)) {
-            activeTrackStarts.set(trackKey, now);
-            for (const k of activeTrackStarts.keys()) {
-              if (k !== trackKey) activeTrackStarts.delete(k);
+        let tracker = sessionTrackers.get(user);
+
+        if (!tracker) {
+          tracker = {
+            trackKey: trackKey,
+            title: trackTitle,
+            artist: artistName,
+            duration: duration,
+            startedAt: now,
+            position: 0,
+            isPaused: !isNowPlaying,
+            pausedAt: !isNowPlaying ? now : 0,
+            totalPausedMs: 0,
+            lastPoll: now
+          };
+          sessionTrackers.set(user, tracker);
+        } else {
+          tracker.duration = duration;
+          // 1. Detect track change: Always reset to 0:00!
+          if (tracker.trackKey !== trackKey) {
+            tracker.trackKey = trackKey;
+            tracker.title = trackTitle;
+            tracker.artist = artistName;
+            tracker.startedAt = now;
+            tracker.position = 0;
+            tracker.totalPausedMs = 0;
+            tracker.isPaused = !isNowPlaying;
+            tracker.pausedAt = !isNowPlaying ? now : 0;
+          } else {
+            // 2. Same track: accurately handle play vs pause
+            if (isNowPlaying) {
+              if (tracker.isPaused) {
+                // Resumed playback from pause!
+                tracker.totalPausedMs += Math.max(0, now - (tracker.pausedAt || now));
+                tracker.isPaused = false;
+                tracker.pausedAt = 0;
+              }
+              // Calculate elapsed seconds excluding paused time
+              const elapsed = Math.floor((now - tracker.startedAt - tracker.totalPausedMs) / 1000);
+              tracker.position = Math.min(duration, Math.max(0, elapsed));
+            } else {
+              // Pause detected: freeze current position!
+              if (!tracker.isPaused) {
+                tracker.isPaused = true;
+                tracker.pausedAt = now;
+              }
+              // Keep tracker.position frozen at its current second
             }
           }
+          tracker.lastPoll = now;
         }
 
-        const startTime = activeTrackStarts.get(trackKey) || now;
-        const elapsedSec = isNowPlaying ? Math.min(duration, Math.max(0, Math.floor((now - startTime) / 1000))) : 0;
+        // If paused for more than 15 minutes, switch to idle last played
+        const isIdle = tracker.isPaused && (now - (tracker.pausedAt || now) > 15 * 60 * 1000);
 
         return res.status(200).json({
           success: true,
           source: 'lastfm',
-          isPlaying: isNowPlaying,
-          isPaused: false,
+          isPlaying: !isIdle,
+          isPaused: tracker.isPaused,
           title: trackTitle,
           artist: artistName,
           album: albumName,
           cover: cover,
           url: current.url || 'https://music.youtube.com',
           duration: duration,
-          position: elapsedSec,
+          position: tracker.position,
           date: current.date ? current.date['#text'] : 'сейчас'
         });
       }

@@ -3013,12 +3013,16 @@
     // Keep continuous smooth ticking if it's the exact same song
     let targetPos = ytmTrackState.position || 0;
     if (!isSameTrack) {
+      // Brand new track: always start from 0:00!
       targetPos = typeof data.position === 'number' ? data.position : 0;
     } else {
-      // Same track: do not snap backwards to initial offsets during polling
-      if (data.source === 'webhook' && typeof data.position === 'number') {
+      // Same track:
+      if (data.isPaused) {
+        // If track is paused, freeze at server position
+        targetPos = typeof data.position === 'number' ? data.position : targetPos;
+      } else if (data.source === 'webhook' && typeof data.position === 'number') {
         targetPos = data.position;
-      } else if (typeof data.position === 'number' && Math.abs(data.position - targetPos) > 30) {
+      } else if (typeof data.position === 'number' && Math.abs(data.position - targetPos) > 25) {
         targetPos = data.position;
       }
     }
@@ -3105,7 +3109,14 @@
       if (ytmTrackState.isPlaying && !ytmTrackState.isPaused) {
         ytmTrackState.position += 1;
         if (ytmTrackState.duration && ytmTrackState.position >= ytmTrackState.duration) {
-          ytmTrackState.position = 0;
+          ytmTrackState.position = ytmTrackState.duration;
+          ytmTrackState.isPaused = true;
+          const card = document.getElementById('ytm-card');
+          const badge = document.getElementById('ytm-badge');
+          const stateIcon = document.getElementById('ytm-state-icon');
+          if (card) card.setAttribute('data-status', 'paused');
+          if (badge) badge.setAttribute('data-status', 'paused');
+          if (stateIcon) stateIcon.textContent = '⏸';
         }
         const posEl = document.getElementById('ytm-pos');
         const durEl = document.getElementById('ytm-dur');
@@ -3141,8 +3152,8 @@
     }
 
     fetchLiveTrack();
-    // Poll API every 10 seconds for real-time changes
-    setInterval(fetchLiveTrack, 10000);
+    // Poll API every 4 seconds for fast play/pause/track response
+    setInterval(fetchLiveTrack, 4000);
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) fetchLiveTrack();
     });
