@@ -6,6 +6,8 @@ let lastManualUpdate = 0;
 const activeTrackStarts = new Map();
 // Cache track durations: trackKey -> seconds
 const durationCache = new Map();
+// Cache artist covers: artistKey -> image url
+const artistCoverCache = new Map();
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -45,7 +47,6 @@ export default async function handler(req, res) {
 
   // If a manual webhook update was received recently (within 5 minutes), prioritize it
   if (manualNowPlaying && (Date.now() - lastManualUpdate < 300000)) {
-    // If webhook is currently playing, smoothly calculate elapsed position
     const elapsed = manualNowPlaying.isPaused 
       ? manualNowPlaying.position 
       : Math.min(manualNowPlaying.duration, manualNowPlaying.position + Math.floor((Date.now() - manualNowPlaying.timestamp) / 1000));
@@ -84,12 +85,13 @@ export default async function handler(req, res) {
 
         let cover = '';
         if (Array.isArray(current.image)) {
-          const largeImg = current.image.find(img => img.size === 'extralarge' || img.size === 'large');
-          cover = largeImg ? largeImg['#text'] : '';
+          const largeImg = current.image.find(img => img.size === 'extralarge' || img.size === 'large' || img.size === 'medium');
+          cover = (largeImg && largeImg['#text']) ? largeImg['#text'] : '';
         }
 
         // Track duration & elapsed timer
         const trackKey = `${user}:${artistName}:${trackTitle}`.toLowerCase();
+        const artistKey = (artistName || '').toLowerCase().trim();
         let duration = 210;
 
         if (durationCache.has(trackKey)) {
@@ -116,11 +118,55 @@ export default async function handler(req, res) {
           } catch (e) {}
         }
 
+        // Fallback 1: If cover is still empty, fetch artist image from Last.fm
+        if (!cover && artistKey) {
+          if (artistCoverCache.has(artistKey)) {
+            cover = artistCoverCache.get(artistKey);
+          } else {
+            try {
+              const artistRes = await fetch(
+                `https://ws.audioscrobbler.com/2.0/?method=artist.getInfo&api_key=${apiKey}&artist=${encodeURIComponent(artistName)}&format=json`,
+                { signal: AbortSignal.timeout(1500) }
+              );
+              if (artistRes.ok) {
+                const aData = await artistRes.json();
+                const artImg = aData?.artist?.image?.find(i => i.size === 'extralarge' || i.size === 'large' || i.size === 'mega');
+                if (artImg && artImg['#text']) {
+                  cover = artImg['#text'];
+                  artistCoverCache.set(artistKey, cover);
+                }
+              }
+            } catch (e) {}
+          }
+        }
+
+        // Fallback 2: Local curated portfolio artwork matching
+        if (!cover) {
+          const tLow = trackTitle.toLowerCase();
+          const aLow = artistName.toLowerCase();
+          if (aLow.includes('renard') || tLow.includes('trauma') || tLow.includes('moonlight')) {
+            cover = 'media/tracks/renard-trauma.jpg';
+          } else if (aLow.includes('femtanyl') || tLow.includes('pistol') || tLow.includes('time')) {
+            cover = 'media/tracks/femtanyl-all-the-time.jpg';
+          } else if (aLow.includes('fem&m') || tLow.includes('silly') || tLow.includes('down')) {
+            cover = 'media/tracks/femm-down-down-down-down.jpg';
+          } else if (aLow.includes('mailpup') || tLow.includes('puppyplay')) {
+            cover = 'media/tracks/mailpup-puppyplay.jpg';
+          } else if (aLow.includes('stomach') || tLow.includes('circuit')) {
+            cover = 'media/tracks/stomach-book-circuit-bent.jpg';
+          } else if (aLow.includes('russel') || tLow.includes('bass')) {
+            cover = 'media/tracks/russelbuck-bass-down-low.jpg';
+          } else if (aLow.includes('unfamiliar')) {
+            cover = 'media/tracks/unfamiliar-123.jpg';
+          } else {
+            cover = 'media/tracks/femtanyl-all-the-time.jpg';
+          }
+        }
+
         const now = Date.now();
         if (isNowPlaying) {
           if (!activeTrackStarts.has(trackKey)) {
             activeTrackStarts.set(trackKey, now);
-            // Prune old entries
             for (const k of activeTrackStarts.keys()) {
               if (k !== trackKey) activeTrackStarts.delete(k);
             }
@@ -138,7 +184,7 @@ export default async function handler(req, res) {
           title: trackTitle,
           artist: artistName,
           album: albumName,
-          cover: cover || 'media/tracks/femtanyl-all-the-time.jpg',
+          cover: cover,
           url: current.url || 'https://music.youtube.com',
           duration: duration,
           position: elapsedSec,

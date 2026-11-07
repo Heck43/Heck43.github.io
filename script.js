@@ -2958,6 +2958,22 @@
     return `${m.toString().padStart(2, '0')}:${rem.toString().padStart(2, '0')}`;
   }
 
+  function resolveSmartCover(title, artist, remoteCover) {
+    if (remoteCover && typeof remoteCover === 'string' && remoteCover.trim() !== '' && !remoteCover.includes('default_album')) {
+      return remoteCover;
+    }
+    const tLow = (title || '').toLowerCase();
+    const aLow = (artist || '').toLowerCase();
+    if (aLow.includes('renard') || tLow.includes('trauma') || tLow.includes('moonlight')) return 'media/tracks/renard-trauma.jpg';
+    if (aLow.includes('femtanyl') || tLow.includes('pistol') || tLow.includes('time')) return 'media/tracks/femtanyl-all-the-time.jpg';
+    if (aLow.includes('fem&m') || tLow.includes('silly') || tLow.includes('down')) return 'media/tracks/femm-down-down-down-down.jpg';
+    if (aLow.includes('mailpup') || tLow.includes('puppyplay')) return 'media/tracks/mailpup-puppyplay.jpg';
+    if (aLow.includes('stomach') || tLow.includes('circuit')) return 'media/tracks/stomach-book-circuit-bent.jpg';
+    if (aLow.includes('russel') || tLow.includes('bass')) return 'media/tracks/russelbuck-bass-down-low.jpg';
+    if (aLow.includes('unfamiliar')) return 'media/tracks/unfamiliar-123.jpg';
+    return 'media/tracks/femtanyl-all-the-time.jpg';
+  }
+
   function renderYtmNowPlaying(data) {
     if (!data) return;
 
@@ -3031,8 +3047,13 @@
     if (artistEl && ytmTrackState.artist) {
       artistEl.textContent = ytmTrackState.artist;
     }
-    if (coverEl && ytmTrackState.cover) {
-      coverEl.src = ytmTrackState.cover;
+    if (coverEl) {
+      const smartCover = resolveSmartCover(ytmTrackState.title, ytmTrackState.artist, ytmTrackState.cover);
+      coverEl.onerror = function() {
+        this.onerror = null;
+        this.src = resolveSmartCover(ytmTrackState.title, ytmTrackState.artist, '');
+      };
+      coverEl.src = smartCover;
     }
     if (coverLink && ytmTrackState.url) {
       coverLink.href = ytmTrackState.url;
