@@ -40,8 +40,15 @@ async function fetchMusicBrainzCover(title, artist, album) {
       return 'media/tracks/renard-trauma.jpg';
     }
     if (tLow.includes('rinse out')) {
-      return 'https://coverartarchive.org/release/62df1cb8-164e-4f7d-bb4c-ddc41d7d5663/front-500.jpg';
+      return 'media/tracks/renard-trauma.jpg';
     }
+  }
+
+  if (aLow.includes('furries in a blender') || aLow.includes('emoticon')) {
+    if (tLow.includes('carbonate')) {
+      return 'https://lastfm-img.freetls.fastly.net/i/u/300x300/e26b3a6463a64e30ba20adf0c4b6c2bf.png';
+    }
+    return 'media/tracks/renard-trauma.jpg';
   }
 
   const cleanTitle = (title || '').replace(/^[^\w\s]+|[^\w\s]+$/g, '').trim();
@@ -105,44 +112,21 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Handle direct POST webhook from phone, browser extension, or desktop userscript
+  // Handle direct POST play/pause toggles
   if (req.method === 'POST') {
     try {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-      if (body && body.title) {
-        manualNowPlaying = {
-          title: body.title,
-          artist: body.artist || 'Unknown Artist',
-          album: body.album || '',
-          cover: body.cover || 'media/tracks/femtanyl-all-the-time.jpg',
-          url: body.url || 'https://music.youtube.com',
-          isPlaying: body.isPlaying !== false,
-          isPaused: Boolean(body.isPaused),
-          position: typeof body.position === 'number' ? Math.floor(body.position) : 0,
-          duration: typeof body.duration === 'number' ? Math.floor(body.duration) : 210,
-          source: 'webhook',
-          timestamp: Date.now()
-        };
-        lastManualUpdate = Date.now();
-        return res.status(200).json({ success: true, stored: manualNowPlaying });
+      const url = new URL(req.url, 'http://localhost');
+      const user = url.searchParams.get('user') || body?.user || 'heck43';
+      let tracker = sessionTrackers.get(user);
+      if (tracker && typeof body?.isPaused === 'boolean') {
+        tracker.isPaused = body.isPaused;
+        tracker.pausedAt = tracker.isPaused ? Date.now() : 0;
       }
+      return res.status(200).json({ success: true, isPaused: tracker ? tracker.isPaused : false });
     } catch (e) {
       return res.status(400).json({ error: 'Invalid JSON body' });
     }
-  }
-
-  // If a manual webhook update was received recently (within 5 minutes), prioritize it
-  if (manualNowPlaying && (Date.now() - lastManualUpdate < 300000)) {
-    const elapsed = manualNowPlaying.isPaused 
-      ? manualNowPlaying.position 
-      : Math.min(manualNowPlaying.duration, manualNowPlaying.position + Math.floor((Date.now() - manualNowPlaying.timestamp) / 1000));
-
-    return res.status(200).json({
-      success: true,
-      source: 'webhook',
-      ...manualNowPlaying,
-      position: elapsed
-    });
   }
 
   // Otherwise, query Last.fm API
@@ -178,9 +162,7 @@ export default async function handler(req, res) {
         const trackKey = `${user}:${artistName}:${trackTitle}`.toLowerCase();
         let duration = 210;
 
-        if (durationCache.has(trackKey)) {
-          duration = durationCache.get(trackKey);
-        } else {
+        if (!cover || isPlaceholder(cover) || !durationCache.has(trackKey)) {
           try {
             const infoRes = await fetch(
               `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${apiKey}&artist=${encodeURIComponent(artistName)}&track=${encodeURIComponent(trackTitle)}&format=json`,
@@ -193,8 +175,8 @@ export default async function handler(req, res) {
                 duration = Math.round(durMs / 1000);
                 durationCache.set(trackKey, duration);
               }
-              if (!cover && infoData?.track?.album?.image) {
-                const img = infoData.track.album.image.find(i => i.size === 'extralarge' || i.size === 'large');
+              if ((!cover || isPlaceholder(cover)) && infoData?.track?.album?.image) {
+                const img = infoData.track.album.image.find(i => i.size === 'extralarge' || i.size === 'large' || i.size === 'medium');
                 if (img && img['#text'] && !isPlaceholder(img['#text'])) {
                   cover = img['#text'];
                 }

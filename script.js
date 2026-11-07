@@ -2973,6 +2973,13 @@
     const tLow = (title || '').toLowerCase();
     const aLow = (artist || '').toLowerCase();
 
+    if (aLow.includes('furries in a blender') || aLow.includes('emoticon')) {
+      if (tLow.includes('carbonate')) {
+        return 'https://lastfm-img.freetls.fastly.net/i/u/300x300/e26b3a6463a64e30ba20adf0c4b6c2bf.png';
+      }
+      return 'media/tracks/renard-trauma.jpg';
+    }
+
     if (aLow.includes('renard') || aLow.includes('lapfox') || aLow.includes('halley') || aLow.includes('rotteen') || aLow.includes('quick brown fox')) {
       if (tLow.includes('relapse') || tLow.includes('force of nature')) {
         return 'https://coverartarchive.org/release/f706dab5-da7a-40ad-a8c2-ca036450ac43/front-500.jpg';
@@ -2990,7 +2997,7 @@
         return 'media/tracks/renard-trauma.jpg';
       }
       if (tLow.includes('rinse out')) {
-        return 'https://coverartarchive.org/release/62df1cb8-164e-4f7d-bb4c-ddc41d7d5663/front-500.jpg';
+        return 'media/tracks/renard-trauma.jpg';
       }
       return 'media/tracks/renard-trauma.jpg';
     }
@@ -3103,7 +3110,7 @@
       const smartCover = resolveSmartCover(ytmTrackState.title, ytmTrackState.artist, ytmTrackState.cover);
       coverEl.onerror = function() {
         this.onerror = null;
-        this.src = resolveSmartCover(ytmTrackState.title, ytmTrackState.artist, '');
+        this.src = 'media/tracks/renard-trauma.jpg';
       };
       coverEl.src = smartCover;
     }
@@ -3144,15 +3151,8 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              title: ytmTrackState.title,
-              artist: ytmTrackState.artist,
-              album: ytmTrackState.album || '',
-              cover: ytmTrackState.cover || '',
-              url: ytmTrackState.url || 'https://music.youtube.com',
-              isPlaying: true,
-              isPaused: ytmTrackState.isPaused,
-              position: ytmTrackState.position || 0,
-              duration: ytmTrackState.duration || 210
+              user: 'heck43',
+              isPaused: ytmTrackState.isPaused
             })
           }).catch(() => {});
         } catch(err) {}
