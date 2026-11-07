@@ -2958,19 +2958,40 @@
     return `${m.toString().padStart(2, '0')}:${rem.toString().padStart(2, '0')}`;
   }
 
+  function isPlaceholderCover(url) {
+    if (!url || typeof url !== 'string' || !url.trim()) return true;
+    return url.includes('2a96cbd8b46e442fc41c2b86b821562f') ||
+           url.includes('default_album') ||
+           url.includes('noimage');
+  }
+
   function resolveSmartCover(title, artist, remoteCover) {
-    if (remoteCover && typeof remoteCover === 'string' && remoteCover.trim() !== '' && !remoteCover.includes('default_album')) {
+    if (remoteCover && !isPlaceholderCover(remoteCover)) {
       return remoteCover;
     }
     const tLow = (title || '').toLowerCase();
     const aLow = (artist || '').toLowerCase();
-    if (aLow.includes('renard') || tLow.includes('trauma') || tLow.includes('moonlight')) return 'media/tracks/renard-trauma.jpg';
-    if (aLow.includes('femtanyl') || tLow.includes('pistol') || tLow.includes('time')) return 'media/tracks/femtanyl-all-the-time.jpg';
-    if (aLow.includes('fem&m') || tLow.includes('silly') || tLow.includes('down')) return 'media/tracks/femm-down-down-down-down.jpg';
-    if (aLow.includes('mailpup') || tLow.includes('puppyplay')) return 'media/tracks/mailpup-puppyplay.jpg';
-    if (aLow.includes('stomach') || tLow.includes('circuit')) return 'media/tracks/stomach-book-circuit-bent.jpg';
-    if (aLow.includes('russel') || tLow.includes('bass')) return 'media/tracks/russelbuck-bass-down-low.jpg';
-    if (aLow.includes('unfamiliar')) return 'media/tracks/unfamiliar-123.jpg';
+    if (aLow.includes('renard') || aLow.includes('rotteen') || aLow.includes('lapfox') || aLow.includes('halley') || aLow.includes('kitsune') || aLow.includes('mayhem') || aLow.includes('truxton') || aLow.includes('darius') || aLow.includes('negaren') || aLow.includes('jackal') || tLow.includes('trauma') || tLow.includes('moonlight') || tLow.includes('because maybe') || tLow.includes('bumblefuck') || tLow.includes('ep!') || tLow.includes('party') || tLow.includes('rinse out')) {
+      return 'media/tracks/renard-trauma.jpg';
+    }
+    if (aLow.includes('femtanyl') || tLow.includes('pistol') || tLow.includes('time') || tLow.includes('lovesick') || tLow.includes('katamari') || tLow.includes('act right') || tLow.includes('dogmatica') || tLow.includes('push ur t3mpo')) {
+      return 'media/tracks/femtanyl-all-the-time.jpg';
+    }
+    if (aLow.includes('fem&m') || tLow.includes('silly') || tLow.includes('down')) {
+      return 'media/tracks/femm-down-down-down-down.jpg';
+    }
+    if (aLow.includes('mailpup') || tLow.includes('puppyplay')) {
+      return 'media/tracks/mailpup-puppyplay.jpg';
+    }
+    if (aLow.includes('stomach') || tLow.includes('circuit')) {
+      return 'media/tracks/stomach-book-circuit-bent.jpg';
+    }
+    if (aLow.includes('russel') || tLow.includes('bass') || tLow.includes('eat you up')) {
+      return 'media/tracks/russelbuck-bass-down-low.jpg';
+    }
+    if (aLow.includes('unfamiliar')) {
+      return 'media/tracks/unfamiliar-123.jpg';
+    }
     return 'media/tracks/femtanyl-all-the-time.jpg';
   }
 

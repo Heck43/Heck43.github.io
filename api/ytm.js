@@ -6,8 +6,58 @@ let lastManualUpdate = 0;
 const activeTrackStarts = new Map();
 // Cache track durations: trackKey -> seconds
 const durationCache = new Map();
-// Cache artist covers: artistKey -> image url
-const artistCoverCache = new Map();
+// Cache resolved covers: queryKey -> image url
+const coverCache = new Map();
+
+function isPlaceholder(url) {
+  if (!url || typeof url !== 'string' || !url.trim()) return true;
+  return url.includes('2a96cbd8b46e442fc41c2b86b821562f') ||
+         url.includes('default_album') ||
+         url.includes('noimage');
+}
+
+// Fetch cover from MusicBrainz + CoverArtArchive (covers Rotteen, LapFox, Renard, indie, etc.)
+async function fetchMusicBrainzCover(title, artist, album) {
+  const cleanTitle = (title || '').replace(/^[^\w\s]+|[^\w\s]+$/g, '').trim();
+  const searchQueries = [];
+  
+  if (album && album.length > 2) {
+    searchQueries.push(`release:${album}`);
+  }
+  searchQueries.push(`${artist} ${cleanTitle.split('-')[0].trim()}`);
+  searchQueries.push(artist);
+
+  for (const q of searchQueries) {
+    try {
+      const mbRes = await fetch(
+        `https://musicbrainz.org/ws/2/release/?query=${encodeURIComponent(q)}&fmt=json&limit=3`,
+        {
+          headers: { 'User-Agent': 'MetawkaPortfolio/2.0 ( contact@heck43.github.io )' },
+          signal: AbortSignal.timeout(2200)
+        }
+      );
+      if (mbRes.ok) {
+        const mbData = await mbRes.json();
+        const releases = mbData?.releases || [];
+        for (const rel of releases) {
+          if (rel.id) {
+            try {
+              const caaRes = await fetch(`https://coverartarchive.org/release/${rel.id}`, { signal: AbortSignal.timeout(1800) });
+              if (caaRes.ok) {
+                const caaData = await caaRes.json();
+                const front = caaData?.images?.find(i => i.front)?.image || caaData?.images?.[0]?.image;
+                if (front) {
+                  return front.replace(/^http:/, 'https:');
+                }
+              }
+            } catch (e) {}
+          }
+        }
+      }
+    } catch (e) {}
+  }
+  return null;
+}
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -86,12 +136,11 @@ export default async function handler(req, res) {
         let cover = '';
         if (Array.isArray(current.image)) {
           const largeImg = current.image.find(img => img.size === 'extralarge' || img.size === 'large' || img.size === 'medium');
-          cover = (largeImg && largeImg['#text']) ? largeImg['#text'] : '';
+          cover = (largeImg && largeImg['#text'] && !isPlaceholder(largeImg['#text'])) ? largeImg['#text'] : '';
         }
 
         // Track duration & elapsed timer
         const trackKey = `${user}:${artistName}:${trackTitle}`.toLowerCase();
-        const artistKey = (artistName || '').toLowerCase().trim();
         let duration = 210;
 
         if (durationCache.has(trackKey)) {
@@ -112,39 +161,53 @@ export default async function handler(req, res) {
               // If image was missing in getrecenttracks, try album image from track info
               if (!cover && infoData?.track?.album?.image) {
                 const img = infoData.track.album.image.find(i => i.size === 'extralarge' || i.size === 'large');
-                if (img && img['#text']) cover = img['#text'];
+                if (img && img['#text'] && !isPlaceholder(img['#text'])) {
+                  cover = img['#text'];
+                }
               }
             }
           } catch (e) {}
         }
 
-        // Fallback 1: If cover is still empty, fetch artist image from Last.fm
-        if (!cover && artistKey) {
-          if (artistCoverCache.has(artistKey)) {
-            cover = artistCoverCache.get(artistKey);
-          } else {
-            try {
-              const artistRes = await fetch(
-                `https://ws.audioscrobbler.com/2.0/?method=artist.getInfo&api_key=${apiKey}&artist=${encodeURIComponent(artistName)}&format=json`,
-                { signal: AbortSignal.timeout(1500) }
-              );
-              if (artistRes.ok) {
-                const aData = await artistRes.json();
-                const artImg = aData?.artist?.image?.find(i => i.size === 'extralarge' || i.size === 'large' || i.size === 'mega');
-                if (artImg && artImg['#text']) {
-                  cover = artImg['#text'];
-                  artistCoverCache.set(artistKey, cover);
-                }
-              }
-            } catch (e) {}
-          }
+        // Check if cover is in cache
+        if (!cover && coverCache.has(trackKey)) {
+          cover = coverCache.get(trackKey);
         }
 
-        // Fallback 2: Local curated portfolio artwork matching
-        if (!cover) {
+        // Fallback 1: Query MusicBrainz + CoverArtArchive
+        if (!cover || isPlaceholder(cover)) {
+          try {
+            const mbCover = await fetchMusicBrainzCover(trackTitle, artistName, albumName);
+            if (mbCover) {
+              cover = mbCover;
+              coverCache.set(trackKey, cover);
+            }
+          } catch (e) {}
+        }
+
+        // Fallback 2: Query iTunes Search API
+        if (!cover || isPlaceholder(cover)) {
+          try {
+            const itunesRes = await fetch(
+              `https://itunes.apple.com/search?term=${encodeURIComponent(artistName + ' ' + trackTitle)}&media=music&limit=1`,
+              { signal: AbortSignal.timeout(1600) }
+            );
+            if (itunesRes.ok) {
+              const itData = await itunesRes.json();
+              const itImg = itData?.results?.[0]?.artworkUrl100;
+              if (itImg) {
+                cover = itImg.replace('100x100bb', '600x600bb');
+                coverCache.set(trackKey, cover);
+              }
+            }
+          } catch (e) {}
+        }
+
+        // Fallback 3: Local curated portfolio artwork matching for Halley Labs / LapFox / indie
+        if (!cover || isPlaceholder(cover)) {
           const tLow = trackTitle.toLowerCase();
           const aLow = artistName.toLowerCase();
-          if (aLow.includes('renard') || tLow.includes('trauma') || tLow.includes('moonlight')) {
+          if (aLow.includes('renard') || aLow.includes('rotteen') || aLow.includes('lapfox') || aLow.includes('halley') || aLow.includes('kitsune') || tLow.includes('trauma') || tLow.includes('moonlight') || tLow.includes('because maybe')) {
             cover = 'media/tracks/renard-trauma.jpg';
           } else if (aLow.includes('femtanyl') || tLow.includes('pistol') || tLow.includes('time')) {
             cover = 'media/tracks/femtanyl-all-the-time.jpg';
