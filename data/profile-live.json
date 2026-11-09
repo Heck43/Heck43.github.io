@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-11-09T08:41:59.875Z",
-  "timestamp": 1794213719875,
+  "lastUpdated": "2026-11-09T19:07:48.198Z",
+  "timestamp": 1794251268198,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
-    "onlineState": "offline",
-    "stateMessage": "Currently Offline",
+    "onlineState": "online",
+    "stateMessage": "Online",
     "currentGame": null,
     "avatar": "media/steam-avatar.jpg",
     "memberSince": "November 2, 2020",
@@ -14,6 +14,14 @@
     "gamesCount": "135+",
     "badgesCount": 17,
     "recentGames": [
+      {
+        "name": "Casualties: Unknown",
+        "appId": "4576490",
+        "link": "https://steamcommunity.com/app/4576490",
+        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4576490/4bd0ac964ae0f701937990ca144a08cd36e74f9e/capsule_184x69.jpg?t=1794232782",
+        "hours": "1.8 ч",
+        "sub": "запуск: Nov 9"
+      },
       {
         "name": "Far Cry 6",
         "appId": "2369390",
@@ -28,14 +36,6 @@
         "link": "https://steamcommunity.com/app/250900",
         "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/250900/capsule_184x69.jpg?t=1731977365",
         "hours": "10.9 ч",
-        "sub": "запуск: Nov 7"
-      },
-      {
-        "name": "BOYKISSER IS COMING",
-        "appId": "5101080",
-        "link": "https://steamcommunity.com/app/5101080",
-        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/5101080/1172010344a07c41f264541b49e3cb264408a6ca/capsule_184x69.jpg?t=1791547473",
-        "hours": "1.3 ч",
         "sub": "запуск: Nov 7"
       },
       {
