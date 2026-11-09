@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-11-08T22:23:19.032Z",
-  "timestamp": 1794176599032,
+  "lastUpdated": "2026-11-09T01:46:44.323Z",
+  "timestamp": 1794188804323,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
-    "onlineState": "in-game",
-    "stateMessage": "In-Game: Far Cry 6",
-    "currentGame": "Far Cry 6",
+    "onlineState": "offline",
+    "stateMessage": "Currently Offline",
+    "currentGame": null,
     "avatar": "media/steam-avatar.jpg",
     "memberSince": "November 2, 2020",
     "summary": "I'm just a regular gamer :3",
@@ -20,7 +20,7 @@
         "link": "https://steamcommunity.com/app/2369390",
         "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
         "hours": "49 ч",
-        "sub": "в библиотеке"
+        "sub": "запуск: Nov 8"
       },
       {
         "name": "The Binding of Isaac: Rebirth",
