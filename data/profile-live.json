@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-11-09T19:07:48.198Z",
-  "timestamp": 1794251268198,
+  "lastUpdated": "2026-11-10T02:00:01.059Z",
+  "timestamp": 1794276001059,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
-    "onlineState": "online",
-    "stateMessage": "Online",
+    "onlineState": "offline",
+    "stateMessage": "Currently Offline",
     "currentGame": null,
     "avatar": "media/steam-avatar.jpg",
     "memberSince": "November 2, 2020",
