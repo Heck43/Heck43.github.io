@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-11-10T17:09:36.800Z",
-  "timestamp": 1794330576800,
+  "lastUpdated": "2026-11-10T22:20:41.153Z",
+  "timestamp": 1794349241153,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
-    "onlineState": "in-game",
-    "stateMessage": "In-Game: Arma 3",
-    "currentGame": "Arma 3",
+    "onlineState": "offline",
+    "stateMessage": "Currently Offline",
+    "currentGame": null,
     "avatar": "media/steam-avatar.jpg",
     "memberSince": "November 2, 2020",
     "summary": "I'm just a regular gamer :3",
@@ -19,8 +19,8 @@
         "appId": "107410",
         "link": "https://steamcommunity.com/app/107410",
         "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/107410/capsule_184x69.jpg?t=1786458620",
-        "hours": "82 ч",
-        "sub": "в библиотеке"
+        "hours": "83 ч",
+        "sub": "запуск: Nov 10"
       },
       {
         "name": "Casualties: Unknown",
