@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-11-11T08:50:06.538Z",
-  "timestamp": 1794387006538,
+  "lastUpdated": "2026-11-11T16:39:34.038Z",
+  "timestamp": 1794415174038,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
-    "onlineState": "in-game",
-    "stateMessage": "In-Game: Casualties: Unknown",
-    "currentGame": "Casualties: Unknown",
+    "onlineState": "online",
+    "stateMessage": "Online",
+    "currentGame": null,
     "avatar": "media/steam-avatar.jpg",
     "memberSince": "November 2, 2020",
     "summary": "I'm just a regular gamer :3",
@@ -18,15 +18,15 @@
         "name": "Casualties: Unknown",
         "appId": "4576490",
         "link": "https://steamcommunity.com/app/4576490",
-        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4576490/4bd0ac964ae0f701937990ca144a08cd36e74f9e/capsule_184x69.jpg?t=1794232782",
-        "hours": "2.8 ч",
-        "sub": "в библиотеке"
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4576490/4bd0ac964ae0f701937990ca144a08cd36e74f9e/capsule_184x69.jpg?t=1794232782",
+        "hours": "4.1 ч",
+        "sub": "запуск: Nov 11"
       },
       {
         "name": "Arma 3",
         "appId": "107410",
         "link": "https://steamcommunity.com/app/107410",
-        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/107410/capsule_184x69.jpg?t=1786458620",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/107410/capsule_184x69.jpg?t=1786458620",
         "hours": "83 ч",
         "sub": "запуск: Nov 10"
       },
@@ -34,7 +34,7 @@
         "name": "Far Cry 6",
         "appId": "2369390",
         "link": "https://steamcommunity.com/app/2369390",
-        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
         "hours": "49 ч",
         "sub": "запуск: Nov 8"
       },
