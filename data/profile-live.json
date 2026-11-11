@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-11-10T22:20:41.153Z",
-  "timestamp": 1794349241153,
+  "lastUpdated": "2026-11-11T01:58:54.487Z",
+  "timestamp": 1794362334487,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
@@ -18,7 +18,7 @@
         "name": "Arma 3",
         "appId": "107410",
         "link": "https://steamcommunity.com/app/107410",
-        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/107410/capsule_184x69.jpg?t=1786458620",
+        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/107410/capsule_184x69.jpg?t=1786458620",
         "hours": "83 ч",
         "sub": "запуск: Nov 10"
       },
@@ -26,7 +26,7 @@
         "name": "Casualties: Unknown",
         "appId": "4576490",
         "link": "https://steamcommunity.com/app/4576490",
-        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4576490/4bd0ac964ae0f701937990ca144a08cd36e74f9e/capsule_184x69.jpg?t=1794232782",
+        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4576490/4bd0ac964ae0f701937990ca144a08cd36e74f9e/capsule_184x69.jpg?t=1794232782",
         "hours": "1.8 ч",
         "sub": "запуск: Nov 9"
       },
@@ -34,7 +34,7 @@
         "name": "Far Cry 6",
         "appId": "2369390",
         "link": "https://steamcommunity.com/app/2369390",
-        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
+        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
         "hours": "49 ч",
         "sub": "запуск: Nov 8"
       },
