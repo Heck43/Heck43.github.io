@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-11-12T11:48:46.408Z",
-  "timestamp": 1794484126408,
+  "lastUpdated": "2026-11-12T19:10:57.878Z",
+  "timestamp": 1794510657879,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
-    "onlineState": "online",
-    "stateMessage": "Online",
-    "currentGame": null,
+    "onlineState": "in-game",
+    "stateMessage": "In-Game: Far Cry 6",
+    "currentGame": "Far Cry 6",
     "avatar": "media/steam-avatar.jpg",
     "memberSince": "November 2, 2020",
     "summary": "I'm just a regular gamer :3",
@@ -15,11 +15,19 @@
     "badgesCount": 17,
     "recentGames": [
       {
+        "name": "Far Cry 6",
+        "appId": "2369390",
+        "link": "https://steamcommunity.com/app/2369390",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
+        "hours": "49 ч",
+        "sub": "в библиотеке"
+      },
+      {
         "name": "Casualties: Unknown",
         "appId": "4576490",
         "link": "https://steamcommunity.com/app/4576490",
         "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4576490/4bd0ac964ae0f701937990ca144a08cd36e74f9e/capsule_184x69.jpg?t=1794232782",
-        "hours": "5.2 ч",
+        "hours": "5.5 ч",
         "sub": "запуск: Nov 12"
       },
       {
@@ -29,14 +37,6 @@
         "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/107410/capsule_184x69.jpg?t=1786458620",
         "hours": "84 ч",
         "sub": "запуск: Nov 11"
-      },
-      {
-        "name": "Far Cry 6",
-        "appId": "2369390",
-        "link": "https://steamcommunity.com/app/2369390",
-        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
-        "hours": "49 ч",
-        "sub": "запуск: Nov 8"
       },
       {
         "name": "Wallpaper Engine",
