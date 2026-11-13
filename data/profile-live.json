@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-11-12T19:10:57.878Z",
-  "timestamp": 1794510657879,
+  "lastUpdated": "2026-11-13T00:17:06.856Z",
+  "timestamp": 1794529026857,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
-    "onlineState": "in-game",
-    "stateMessage": "In-Game: Far Cry 6",
-    "currentGame": "Far Cry 6",
+    "onlineState": "offline",
+    "stateMessage": "Currently Offline",
+    "currentGame": null,
     "avatar": "media/steam-avatar.jpg",
     "memberSince": "November 2, 2020",
     "summary": "I'm just a regular gamer :3",
@@ -19,8 +19,8 @@
         "appId": "2369390",
         "link": "https://steamcommunity.com/app/2369390",
         "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
-        "hours": "49 ч",
-        "sub": "в библиотеке"
+        "hours": "52 ч",
+        "sub": "запуск: Nov 12"
       },
       {
         "name": "Casualties: Unknown",
