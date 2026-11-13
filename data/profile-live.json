@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-11-13T14:56:32.244Z",
-  "timestamp": 1794581792245,
+  "lastUpdated": "2026-11-13T21:05:50.679Z",
+  "timestamp": 1794603950680,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
@@ -15,28 +15,28 @@
     "badgesCount": 17,
     "recentGames": [
       {
+        "name": "Garry's Mod",
+        "appId": "4000",
+        "link": "https://steamcommunity.com/app/4000",
+        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4000/2e52d9b905feebfdaaf2db6ad7afece10991d504/capsule_184x69.jpg?t=1776868682",
+        "hours": "179 ч",
+        "sub": "запуск: Nov 13"
+      },
+      {
+        "name": "BOYKISSER IS COMING",
+        "appId": "5101080",
+        "link": "https://steamcommunity.com/app/5101080",
+        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/5101080/1172010344a07c41f264541b49e3cb264408a6ca/capsule_184x69.jpg?t=1791547473",
+        "hours": "1.6 ч",
+        "sub": "запуск: Nov 13"
+      },
+      {
         "name": "Far Cry 6",
         "appId": "2369390",
         "link": "https://steamcommunity.com/app/2369390",
         "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
         "hours": "52 ч",
         "sub": "запуск: Nov 12"
-      },
-      {
-        "name": "Casualties: Unknown",
-        "appId": "4576490",
-        "link": "https://steamcommunity.com/app/4576490",
-        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4576490/4bd0ac964ae0f701937990ca144a08cd36e74f9e/capsule_184x69.jpg?t=1794232782",
-        "hours": "5.5 ч",
-        "sub": "запуск: Nov 12"
-      },
-      {
-        "name": "Arma 3",
-        "appId": "107410",
-        "link": "https://steamcommunity.com/app/107410",
-        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/107410/capsule_184x69.jpg?t=1786458620",
-        "hours": "84 ч",
-        "sub": "запуск: Nov 11"
       },
       {
         "name": "Wallpaper Engine",
