@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-11-13T21:05:50.679Z",
-  "timestamp": 1794603950680,
+  "lastUpdated": "2026-11-14T01:25:04.247Z",
+  "timestamp": 1794619504247,
   "steam": {
     "steamID64": "76561199103695244",
     "steamID": "Heck_43",
-    "onlineState": "online",
-    "stateMessage": "Online",
+    "onlineState": "offline",
+    "stateMessage": "Currently Offline",
     "currentGame": null,
     "avatar": "media/steam-avatar.jpg",
     "memberSince": "November 2, 2020",
@@ -18,7 +18,7 @@
         "name": "Garry's Mod",
         "appId": "4000",
         "link": "https://steamcommunity.com/app/4000",
-        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4000/2e52d9b905feebfdaaf2db6ad7afece10991d504/capsule_184x69.jpg?t=1776868682",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4000/2e52d9b905feebfdaaf2db6ad7afece10991d504/capsule_184x69.jpg?t=1776868682",
         "hours": "179 ч",
         "sub": "запуск: Nov 13"
       },
@@ -26,7 +26,7 @@
         "name": "BOYKISSER IS COMING",
         "appId": "5101080",
         "link": "https://steamcommunity.com/app/5101080",
-        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/5101080/1172010344a07c41f264541b49e3cb264408a6ca/capsule_184x69.jpg?t=1791547473",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/5101080/1172010344a07c41f264541b49e3cb264408a6ca/capsule_184x69.jpg?t=1791547473",
         "hours": "1.6 ч",
         "sub": "запуск: Nov 13"
       },
@@ -34,7 +34,7 @@
         "name": "Far Cry 6",
         "appId": "2369390",
         "link": "https://steamcommunity.com/app/2369390",
-        "icon": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
+        "icon": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2369390/0155dcf6a44343b85e682b48648d95716f92a5c6/capsule_184x69.jpg?t=1793372616",
         "hours": "52 ч",
         "sub": "запуск: Nov 12"
       },
